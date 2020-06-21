@@ -48,23 +48,22 @@ namespace Orders.Api.Controllers
 
             return ordersPresenter
                 .GetOrder(orderId, customerId)
-                .Unwrap(
+                .Unwrap<IActionResult, Order>(
                     onSuccess: order => Ok(_mapper.Map<OrderVm>(order)),
-                    onError1: errorInfo => errorInfo.Code switch
+                    onError: errorInfo => errorInfo switch
                     {
-                        ORDER_ACCESS_FORBIDDEN_CODE => NotFound(errorInfo.Message),
+                        { Code: ORDER_ACCESS_FORBIDDEN_CODE } => NotFound(errorInfo.Message),
 
-                        ORDER_NOT_FOUND_CODE => NotFound(errorInfo.Message),
+                        { Code: ORDER_NOT_FOUND_CODE } => NotFound(errorInfo.Message),
 
-                        _ => Problem(errorInfo.ToString())
-                    },
-                    onError2: exceptionDispatchInfo => throw new GetOrderException(
-                        "Необработанная ошибка при получении данных заказа",
-                        exceptionDispatchInfo.SourceException
-                    ));
+                        _ => throw new GetOrderException(
+                            "Необработанная ошибка при получении данных заказа",
+                            errorInfo.ExceptionDispatchInfo?.SourceException
+                        )
+                    });
         }
 
-        [HttpGet("{orderId}")]
+        [HttpGet("old/{orderId}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(OrderVm), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -82,7 +81,7 @@ namespace Orders.Api.Controllers
 
                 return Ok(order);
             }
-            catch (InvalidOperationException e)
+            catch (InvalidOperationException)
             {
                 return NotFound(); // чужой заказ
             }
@@ -98,7 +97,7 @@ namespace Orders.Api.Controllers
 
     public sealed class GetOrderException : Exception
     {
-        public GetOrderException(string errorMessage, Exception innerException)
+        public GetOrderException(string errorMessage, Exception? innerException)
             : base(errorMessage, innerException)
         {
         }

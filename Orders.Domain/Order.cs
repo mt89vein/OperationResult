@@ -21,7 +21,7 @@ namespace Orders.Domain
         }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object"></see> class.</summary>
-        public Order(Guid id, Guid customerId, IEnumerable<OrderLine> orderLines = null)
+        public Order(Guid id, Guid customerId, IEnumerable<OrderLine>? orderLines = null)
         {
             if (id == Guid.Empty)
             {
@@ -58,7 +58,7 @@ namespace Orders.Domain
 
             var existOrderLine = _orderLines.FirstOrDefault(ol => ol == orderLine);
 
-            if (existOrderLine == null)
+            if (existOrderLine == null!)
             {
                 _orderLines.Add(orderLine);
             }

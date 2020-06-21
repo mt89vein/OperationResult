@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
 
 namespace OperationResult
 {
@@ -20,6 +22,8 @@ namespace OperationResult
         private static readonly SuccessTag _successTag = new SuccessTag();
 
         #endregion Поля
+
+        #region Методы (public)
 
         /// <summary>
         /// Создает успешный результат операции.
@@ -52,27 +56,9 @@ namespace OperationResult
         /// Создает результат операции "Ошибка" с данными об ошибке.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ErrorTag<TError> Error<TError>(in TError error)
+        public static ErrorTag Error(in ErrorInfo errorInfo)
         {
-            return new ErrorTag<TError>(error);
-        }
-
-        /// <summary>
-        /// Создает результат операции "Ошибка" с данными об ошибке.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ErrorTag<TError> Error<TError>(in ErrorInfo errorInfo, in TError error)
-        {
-            return new ErrorTag<TError>(errorInfo, error);
-        }
-
-        /// <summary>
-        /// Создает результат операции "Ошибка" с данными об ошибке.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ErrorTag<TError> Error<TError>(in int errorCode, in string errorMessage, in TError error)
-        {
-            return new ErrorTag<TError>(new ErrorInfo(errorCode, errorMessage), error);
+            return new ErrorTag(errorInfo);
         }
 
         /// <summary>
@@ -83,5 +69,16 @@ namespace OperationResult
         {
             return new ErrorTag(new ErrorInfo(errorCode, errorMessage));
         }
+
+        /// <summary>
+        /// Создает результат операции "Ошибка" с данными об ошибке.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ErrorTag Error(in Exception exception)
+        {
+            return new ErrorTag(new ErrorInfo(ExceptionDispatchInfo.Capture(exception)));
+        }
+
+        #endregion Методы (public)
     }
 }

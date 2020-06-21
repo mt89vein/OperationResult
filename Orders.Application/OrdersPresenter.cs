@@ -3,8 +3,6 @@ using Orders.Domain;
 using Orders.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Runtime.ExceptionServices;
-using System.Threading.Tasks;
 using static OperationResult.OperationResultHelper;
 using static Orders.Application.OrderOperationResult;
 
@@ -24,7 +22,7 @@ namespace Orders.Application
             return _ordersRepository.GetOrders(customerId);
         }
 
-        public Result<Order, ErrorInfo, ExceptionDispatchInfo> GetOrder(Guid orderId, Guid customerId)
+        public Result<Order> GetOrder(Guid orderId, Guid customerId)
         {
             try
             {
@@ -44,11 +42,12 @@ namespace Orders.Application
             }
             catch (Exception e)
             {
-                return Error(ExceptionDispatchInfo.Capture(e));
+                return Error(e);
             }
         }
 
-        public Order GetOrderOld(Guid orderId, Guid customerId)
+        // вариант без использования Result<T>
+        public Order? GetOrderOld(Guid orderId, Guid customerId)
         {
             var order = _ordersRepository.GetOrder(orderId);
 
