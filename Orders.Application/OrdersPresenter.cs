@@ -38,7 +38,7 @@ namespace Orders.Application
                     return OrderAccessForbidden(orderId, customerId);
                 }
 
-                return Ok(order);
+                return order;
             }
             catch (Exception e)
             {
