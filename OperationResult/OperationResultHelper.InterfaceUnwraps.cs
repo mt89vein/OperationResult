@@ -5,30 +5,57 @@ namespace OperationResult
 {
     public static partial class OperationResultHelper
     {
+        /// <summary>
+        /// Получить результат выполнения.
+        /// </summary>
+        /// <typeparam name="TUnwrapResult">Тип результата выполнения.</typeparam>
+        /// <param name="operationResult">Результат операции.</param>
+        /// <param name="onSuccess">Действие, которое необходимо выполнить, в случае успешного результата операции.</param>
+        /// <param name="onError">Действие, которое необходимо выполнить, в случае неуспешного результата операции.</param>
+        /// <returns>Результат выполнения.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TUnwrapResult Unwrap<TUnwrapResult>(
             this IResult<object> operationResult,
             Func<object, TUnwrapResult> onSuccess,
-            Func<TUnwrapResult> onFailure
+            Func<TUnwrapResult> onError
         )
         {
             return operationResult.IsSuccess
                 ? onSuccess(operationResult.Value)
-                : onFailure();
+                : onError();
         }
 
+        /// <summary>
+        /// Получить результат выполнения.
+        /// </summary>
+        /// <typeparam name="TUnwrapResult">Тип результата выполнения.</typeparam>
+        /// <typeparam name="TResult">Тип результа операции.</typeparam>
+        /// <param name="operationResult">Результат операции.</param>
+        /// <param name="onSuccess">Действие, которое необходимо выполнить, в случае успешного результата операции.</param>
+        /// <param name="onError">Действие, которое необходимо выполнить, в случае неуспешного результата операции.</param>
+        /// <returns>Результат выполнения.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TUnwrapResult Unwrap<TUnwrapResult, TResult>(
             this IResult<TResult> operationResult,
             Func<TResult, TUnwrapResult> onSuccess,
-            Func<TUnwrapResult> onFailure
+            Func<TUnwrapResult> onError
         )
         {
             return operationResult.IsSuccess
                 ? onSuccess(operationResult.Value)
-                : onFailure();
+                : onError();
         }
 
+        /// <summary>
+        /// Получить результат выполнения.
+        /// </summary>
+        /// <typeparam name="TUnwrapResult">Тип результата выполнения.</typeparam>
+        /// <typeparam name="TResult">Тип результа операции.</typeparam>
+        /// <typeparam name="TError">Тип ошибки операции.</typeparam>
+        /// <param name="operationResult">Результат операции.</param>
+        /// <param name="onSuccess">Действие, которое необходимо выполнить, в случае успешного результата операции.</param>
+        /// <param name="onError">Действие, которое необходимо выполнить, в случае ошибки с типом <see cref="TError"/>.</param>
+        /// <returns>Результат выполнения.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TUnwrapResult Unwrap<TUnwrapResult, TResult, TError>(
             this IResult<TResult, TError> operationResult,
@@ -49,6 +76,18 @@ namespace OperationResult
             return onError(operationResult.Error);
         }
 
+        /// <summary>
+        /// Получить результат выполнения.
+        /// </summary>
+        /// <typeparam name="TUnwrapResult">Тип результата выполнения.</typeparam>
+        /// <typeparam name="TResult">Тип результа операции.</typeparam>
+        /// <typeparam name="TError1">Первый вариант ошибки операции.</typeparam>
+        /// <typeparam name="TError2">Второй вариант ошибки операции.</typeparam>
+        /// <param name="operationResult">Результат операции.</param>
+        /// <param name="onSuccess">Действие, которое необходимо выполнить, в случае успешного результата операции.</param>
+        /// <param name="onError1">Действие, которое необходимо выполнить, в случае ошибки с типом <see cref="TError1"/>.</param>
+        /// <param name="onError2">Действие, которое необходимо выполнить, в случае ошибки с типом <see cref="TError2"/>.</param>
+        /// <returns>Результат выполнения.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TUnwrapResult Unwrap<TUnwrapResult, TResult, TError1, TError2>(
             this IResult<TResult, TError1, TError2> operationResult,
@@ -80,6 +119,20 @@ namespace OperationResult
             return onError2(operationResult.GetError<TError2>());
         }
 
+        /// <summary>
+        /// Получить результат выполнения.
+        /// </summary>
+        /// <typeparam name="TUnwrapResult">Тип результата выполнения.</typeparam>
+        /// <typeparam name="TResult">Тип результа операции.</typeparam>
+        /// <typeparam name="TError1">Первый вариант ошибки операции.</typeparam>
+        /// <typeparam name="TError2">Второй вариант ошибки операции.</typeparam>
+        /// <typeparam name="TError3">Третий вариант ошибки операции.</typeparam>
+        /// <param name="operationResult">Результат операции.</param>
+        /// <param name="onSuccess">Действие, которое необходимо выполнить, в случае успешного результата операции.</param>
+        /// <param name="onError1">Действие, которое необходимо выполнить, в случае ошибки с типом <see cref="TError1"/>.</param>
+        /// <param name="onError2">Действие, которое необходимо выполнить, в случае ошибки с типом <see cref="TError2"/>.</param>
+        /// <param name="onError3">Действие, которое необходимо выполнить, в случае ошибки с типом <see cref="TError3"/>.</param>
+        /// <returns>Результат выполнения.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TUnwrapResult Unwrap<TUnwrapResult, TResult, TError1, TError2, TError3>(
             this IResult<TResult, TError1, TError2, TError3> operationResult,

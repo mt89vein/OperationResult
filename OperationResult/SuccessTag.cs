@@ -1,13 +1,15 @@
 ﻿namespace OperationResult
 {
+#pragma warning disable CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
+#pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+#pragma warning disable CA1815 // Override equals and operator equals on value types
     /// <summary>
     /// Структура - тэг, для пометки операции завершенной успешно.
     /// </summary>
     public struct SuccessTag { }
 
     /// <summary>
-    /// Структура - тэг, для пометки операции завершенной успешно
-    /// с возвратом данных.
+    /// Структура - тэг, для пометки операции завершенной успешно с возвратом данных.
     /// </summary>
     /// <typeparam name="TResult">Тип данных результата.</typeparam>
     public struct SuccessTag<TResult>
@@ -26,4 +28,7 @@
             Value = result;
         }
     }
+#pragma warning restore CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
+#pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+#pragma warning restore CA1815 // Override equals and operator equals on value types
 }

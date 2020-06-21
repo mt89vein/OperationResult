@@ -2,13 +2,16 @@
 
 namespace OperationResult
 {
+#pragma warning disable CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
+#pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+#pragma warning disable CA1815 // Override equals and operator equals on value types
     /// <summary>
     /// Структура - тэг, для пометки операции завершенной с ошибкой.
     /// </summary>
     public struct ErrorTag
     {
         /// <summary>
-        /// Метаданные ошибки.
+        /// Мета-данные ошибки.
         /// </summary>
         internal readonly ErrorInfo ErrorInfo;
 
@@ -30,7 +33,7 @@ namespace OperationResult
     public readonly struct ErrorTag<TError>
     {
         /// <summary>
-        /// Метаданные ошибки.
+        /// Мета-данные ошибки.
         /// </summary>
         internal readonly ErrorInfo ErrorInfo;
 
@@ -52,7 +55,7 @@ namespace OperationResult
         /// <summary>
         /// Создает новый экземпляр структуры <see cref="ErrorTag{TError}"/>
         /// </summary>
-        /// <param name="errorInfo">Метаданные ошибки.</param>
+        /// <param name="errorInfo">Мета-данные ошибки.</param>
         /// <param name="error">Данные ошибки.</param>
         internal ErrorTag(in ErrorInfo errorInfo, in TError error)
         {
@@ -61,23 +64,38 @@ namespace OperationResult
         }
     }
 
+    /// <summary>
+    /// Мета-данные ошибки.
+    /// </summary>
     public readonly struct ErrorInfo : IEquatable<ErrorInfo>
     {
+        /// <summary>
+        /// Код ошибки.
+        /// </summary>
         public int Code { get; }
 
+        /// <summary>
+        /// Текст ошибки.
+        /// </summary>
         public string Message { get; }
 
+        /// <summary>
+        /// Создает новый экземпляр структуры <see cref="ErrorInfo"/>.
+        /// </summary>
+        /// <param name="code">Код ошибки.</param>
+        /// <param name="message">Текст ошибки.</param>
         public ErrorInfo(in int code, in string message)
         {
             Code = code;
             Message = message;
         }
 
-        /// <summary>Returns the fully qualified type name of this instance.</summary>
-        /// <returns>The fully qualified type name.</returns>
+        /// <summary>
+        /// Возвращает строковое представление мета-данных ошибки.
+        /// </summary>
         public override string ToString()
         {
-            return Code + ": "+ Message;
+            return $"Code: {Code}, Message: {Message}.";
         }
 
         #region IEqatable support
@@ -127,4 +145,7 @@ namespace OperationResult
 
         #endregion IEqatable support
     }
+#pragma warning restore CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
+#pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+#pragma warning restore CA1815 // Override equals and operator equals on value types
 }
