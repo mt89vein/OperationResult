@@ -1,6 +1,4 @@
-﻿using System;
 using System.Runtime.CompilerServices;
-using System.Runtime.ExceptionServices;
 
 namespace OperationResult
 {
@@ -68,15 +66,6 @@ namespace OperationResult
         public static ErrorTag Error(in int errorCode, in string errorMessage)
         {
             return new ErrorTag(new ErrorInfo(errorCode, errorMessage));
-        }
-
-        /// <summary>
-        /// Создает результат операции "Ошибка" с данными об ошибке.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ErrorTag Error(in Exception exception)
-        {
-            return new ErrorTag(new ErrorInfo(ExceptionDispatchInfo.Capture(exception)));
         }
 
         #endregion Методы (public)

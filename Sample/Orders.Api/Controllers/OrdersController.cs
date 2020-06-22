@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OperationResult;
@@ -26,16 +26,25 @@ namespace Orders.Api.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(Order), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult AddOrder(OrderVm orderVm, [FromServices] AddOrderUseCase addOrderUseCase)
+        public IActionResult CreateOrder(OrderVm orderVm, [FromServices] AddOrderUseCase addOrderUseCase)
         {
             // для упрощения примера - customerId получаем по api, в реальном приложении обычно достаем его из токена аутентификации.
 
             // TODO: validate OrderVm with fluentValidation
 
-            var order = _mapper.Map<Order>(orderVm);
-            addOrderUseCase.AddOrder(order);
+            return addOrderUseCase
+                .AddOrder(_mapper.Map<Order>(orderVm))
+                .Unwrap<IActionResult, Order, OrderValidationResult>(
+                    onSuccess: order => CreatedAtRoute(new {orderId = order.Id}, _mapper.Map<OrderVm>(order)),
+                    onError: errorInfo => errorInfo switch
+                    {
+                        _ when !(errorInfo.Error is null) => BadRequest(errorInfo.Error),
 
-            return CreatedAtRoute(new { orderId = order.Id }, _mapper.Map<OrderVm>(order));
+                        _ => throw new CreateOrderException(
+                            "Необработанная ошибка при создании заказа",
+                            errorInfo.ExceptionDispatchInfo?.SourceException
+                        )
+                    });
         }
 
         [HttpGet("{orderId}")]
@@ -98,6 +107,14 @@ namespace Orders.Api.Controllers
     public sealed class GetOrderException : Exception
     {
         public GetOrderException(string errorMessage, Exception? innerException)
+            : base(errorMessage, innerException)
+        {
+        }
+    }
+
+    public sealed class CreateOrderException : Exception
+    {
+        public CreateOrderException(string errorMessage, Exception? innerException)
             : base(errorMessage, innerException)
         {
         }

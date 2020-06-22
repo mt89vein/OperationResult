@@ -1,4 +1,4 @@
-﻿using OperationResult;
+using OperationResult;
 using Orders.Domain;
 using Orders.Domain.Interfaces;
 using System;
@@ -42,7 +42,7 @@ namespace Orders.Application
             }
             catch (Exception e)
             {
-                return Error(e);
+                return e;
             }
         }
 
